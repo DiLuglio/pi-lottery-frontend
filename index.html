@@ -4,7 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pi Lottery</title>
+
+    <!-- Caricamento del Pi SDK -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+
+    <!-- Attendi il caricamento del Pi SDK prima di caricare app.js -->
+    <script>
+        window.addEventListener("load", function() {
+            if (typeof Pi === "undefined") {
+                console.error("Pi SDK not loaded. Retrying...");
+                setTimeout(() => {
+                    if (typeof Pi !== "undefined") {
+                        console.log("Pi SDK successfully loaded.");
+                        Pi.init({ version: "2.0" });
+                    }
+                }, 2000);
+            } else {
+                console.log("Pi SDK loaded.");
+                Pi.init({ version: "2.0" });
+            }
+        });
+    </script>
+
     <script src="app.js" defer></script>
     <link rel="stylesheet" href="styles.css">
 </head>
