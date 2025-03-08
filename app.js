@@ -1,7 +1,11 @@
-const BACKEND_URL = "https://pi-lottery.onrender.com";  // Cambia se necessario
-
-document.addEventListener("DOMContentLoaded", async function () {
-    Pi.init({ version: "2.0" });
+document.addEventListener("DOMContentLoaded", function () {
+    // Controlliamo se il Pi SDK è caricato correttamente
+    if (typeof Pi !== "undefined") {
+        console.log("Pi SDK is loaded!");
+        Pi.init({ version: "2.0" });
+    } else {
+        console.error("Pi SDK not loaded. Check index.html!");
+    }
 
     const loginBtn = document.getElementById("loginBtn");
     const joinBtn = document.getElementById("joinLottery");
@@ -12,10 +16,14 @@ document.addEventListener("DOMContentLoaded", async function () {
     let entryFeePi = 0;
 
     async function fetchEntryFee() {
-        const response = await fetch(`${BACKEND_URL}/entry_fee`);
-        const data = await response.json();
-        entryFeePi = data.entry_fee_pi;
-        entryFeeDisplay.innerText = `Today's Entry Fee: ${entryFeePi} Pi`;
+        try {
+            const response = await fetch("https://pi-lottery.onrender.com/entry_fee");
+            const data = await response.json();
+            entryFeePi = data.entry_fee_pi;
+            entryFeeDisplay.innerText = `Today's Entry Fee: ${entryFeePi} Pi`;
+        } catch (error) {
+            console.error("Error fetching entry fee:", error);
+        }
     }
 
     loginBtn.addEventListener("click", async function () {
@@ -42,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 to: "lottery_admin"
             });
 
-            const response = await fetch(`${BACKEND_URL}/join`, {
+            const response = await fetch("https://pi-lottery.onrender.com/join", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username })
